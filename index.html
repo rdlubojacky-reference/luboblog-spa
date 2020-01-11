@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Open+Sans" />
+<style>
+    body {
+        font-family: 'Open Sans', serif;
+    }
+</style>
+</head>
+<body>
+<script>
+function myFunction() {
+    var myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/json");
+    myHeaders.append("Authorization", "AWS4-HMAC-SHA256 Credential=AKIAYMC7VYIUB5ZCDK7M/20200109/us-east-1/execute-api/aws4_request, SignedHeaders=content-type;host;x-amz-content-sha256;x-amz-date, Signature=1a739e5529a1435302c25096b7ef826f8763a7661adf4d3f0c88c8f4ceb2dba7");
+
+    let form = document.querySelector("form");
+
+    var raw = JSON.stringify({"firstName": form.elements.firstName.value, "lastName": form.elements.lastName.value});
+
+    var requestOptions = {
+        method: 'POST',
+        headers: myHeaders,
+        body: raw,
+        redirect: 'follow'
+    };
+
+    fetch("https://api.luboblog.com/v1/users", requestOptions)
+        .then(response => response.text())
+        .then(result => {
+            var resp = JSON.parse(result)
+            document.getElementById("content").innerHTML = "Your name has been updated. Congrats " + resp.firstName + " " + resp.lastName
+            document.getElementById("main").innerHTML = ""
+        })
+        .catch(error => console.log('error => ', error));
+    }
+</script>
+
+<div id="content"></div>
+<div id="main">
+<p>Enter names in the fields, then click "Submit" to submit the form:</p>
+<form id="frm1" action="">
+    <table>
+        <tr><td>First Name: </td><td><input type="text" name="firstName" /></td></tr>
+        <tr><td>Last Name: </td><td><input type="text" name="lastName" /></td></tr>
+    </table>
+    <br />
+    <input type="button" onclick="myFunction()" value="Submit">
+</form>
+</div>
+</body>
+</html>
